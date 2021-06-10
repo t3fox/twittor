@@ -35,13 +35,15 @@ const APP_SHELL_INMUTABLE = [
 
 self.addEventListener('install', e => {
 
-    const cacheStatic = caches.open(STATIC_CACHE).then( cache => 
-        cache.addAll(APP_SHELL));
+    const cacheStatic = caches.open( STATIC_CACHE ).then(cache => 
+        cache.addAll( APP_SHELL ));
 
-    const cacheInmutable = cache.open(INMUTABLE_CACHE).then(cache =>
-        cache.addAll(APP_SHELL_INMUTABLE));
+    const cacheInmutable = caches.open( INMUTABLE_CACHE ).then(cache => 
+        cache.addAll( APP_SHELL_INMUTABLE ));
 
-    e.waitUntil(Promise.all([cacheStatic,cacheInmutable]));
+
+
+    e.waitUntil( Promise.all([ cacheStatic, cacheInmutable ])  );
 });
 
 //______________________________ACTUALIZACION DE CACHE ESTATICO ___________________________//
@@ -58,7 +60,7 @@ self.addEventListener('activate', e => {
             if (  key !== DYNAMIC_CACHE && key.includes('dynamic') ) {
                 return caches.delete(key);
             }
-            
+
         });
 
     });

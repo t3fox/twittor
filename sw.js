@@ -8,7 +8,7 @@ const INMUTABLE_CACHE = 'inmutable-cache';
 
 const APP_SHELL = [
 
-    '/',
+    //'/',      Pa produccion quitamos
     'index.html',
     'css/style.css',
     'img/favicon.ico',

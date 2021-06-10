@@ -1,14 +1,14 @@
-//  IMPORTS
+// imports
 importScripts('js/sw-utils.js');
 
-const STATIC_CACHE    = 'static-cache-v2';
-const DYNAMIC_CACHE   = 'dynamic-cache-v1';
-const INMUTABLE_CACHE = 'inmutable-cache';
+
+const STATIC_CACHE    = 'static-v4';
+const DYNAMIC_CACHE   = 'dynamic-v2';
+const INMUTABLE_CACHE = 'inmutable-v1';
 
 
 const APP_SHELL = [
-
-    //'/',      Pa produccion quitamos
+    // '/',
     'index.html',
     'css/style.css',
     'img/favicon.ico',
@@ -21,7 +21,6 @@ const APP_SHELL = [
     'js/sw-utils.js'
 ];
 
-
 const APP_SHELL_INMUTABLE = [
     'https://fonts.googleapis.com/css?family=Quicksand:300,400',
     'https://fonts.googleapis.com/css?family=Lato:400,300',
@@ -31,9 +30,9 @@ const APP_SHELL_INMUTABLE = [
 ];
 
 
-//_______________________________INSTALACION DE CACHES ___________________________//
 
 self.addEventListener('install', e => {
+
 
     const cacheStatic = caches.open( STATIC_CACHE ).then(cache => 
         cache.addAll( APP_SHELL ));
@@ -44,19 +43,20 @@ self.addEventListener('install', e => {
 
 
     e.waitUntil( Promise.all([ cacheStatic, cacheInmutable ])  );
+
 });
 
-//______________________________ACTUALIZACION DE CACHE ESTATICO ___________________________//
 
 self.addEventListener('activate', e => {
 
-    const respuesta = caches.keys().then(keys => {
+    const respuesta = caches.keys().then( keys => {
 
         keys.forEach( key => {
-            //static-v2
-            if( key !== STATIC_CACHE && key.includes('static')){
-                return caches.delete(key)
+
+            if (  key !== STATIC_CACHE && key.includes('static') ) {
+                return caches.delete(key);
             }
+
             if (  key !== DYNAMIC_CACHE && key.includes('dynamic') ) {
                 return caches.delete(key);
             }
@@ -65,26 +65,36 @@ self.addEventListener('activate', e => {
 
     });
 
-    e.waitUntil(respuesta);
+    e.waitUntil( respuesta );
 
 });
 
-//______________________________ ESCUCHA DEL CACHE  ___________________________________//
 
-self.addEventListener('fetch', e => {
 
-    const respuesta = caches.match(e.request).then(res => {
-            if(res){
-                return res;
-            }
-            else {
- 
-                return fetch(e.request).then( newRes => {
 
-                    return actualizarCacheDinamico( DYNAMIC_CACHE, e.request, newRes );
-                });
-            }
-        });
+self.addEventListener( 'fetch', e => {
 
-    e.waitUntil(respuesta);
+
+    const respuesta = caches.match( e.request ).then( res => {
+
+        if ( res ) {
+            return res;
+        } else {
+
+            return fetch( e.request ).then( newRes => {
+
+                return actualizaCacheDinamico( DYNAMIC_CACHE, e.request, newRes );
+
+            });
+
+        }
+
+    });
+
+
+
+    e.respondWith( respuesta );
+
 });
+
+
